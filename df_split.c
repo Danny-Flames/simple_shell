@@ -3,30 +3,30 @@
 /**
  * swap_char - this swaps | and & for non-printed chars
  *
- * @input_str: the input_str string
+ * @input: the input string
  * @bool: the type of swap
  * Return: the swapped string
  */
-char *swap_char(char *input_str, int bool)
+char *swap_char(char *input, int bool)
 {
 	int i;
 
 	if (bool == 0)
 	{
-		for (i = 0; input_str[i]; i++)
+		for (i = 0; input[i]; i++)
 		{
-			if (input_str[i] == '|')
+			if (input[i] == '|')
 			{
-				if (input_str[i + 1] != '|')
-					input_str[i] = 16;
+				if (input[i + 1] != '|')
+					input[i] = 16;
 				else
 					i++;
 			}
 
-			if (input_str[i] == '&')
+			if (input[i] == '&')
 			{
-				if (input_str[i + 1] != '&')
-					input_str[i] = 12;
+				if (input[i + 1] != '&')
+					input[i] = 12;
 				else
 					i++;
 			}
@@ -34,13 +34,13 @@ char *swap_char(char *input_str, int bool)
 	}
 	else
 	{
-		for (i = 0; input_str[i]; i++)
+		for (i = 0; input[i]; i++)
 		{
-			input_str[i] = (input_str[i] == 16 ? '|' : input_str[i]);
-			input_str[i] = (input_str[i] == 12 ? '&' : input_str[i]);
+			input[i] = (input[i] == 16 ? '|' : input[i]);
+			input[i] = (input[i] == 12 ? '&' : input[i]);
 		}
 	}
-	return (input_str);
+	return (input);
 }
 
 /**
@@ -48,29 +48,29 @@ char *swap_char(char *input_str, int bool)
  *
  * @head_s: head of separator list
  * @head_l: head of command lines list
- * @input_str: input_str string
+ * @input: input string
  * Return: no return
  */
-void add_nodes(sep_list **head_s, line_list **head_l, char *input_str)
+void add_nodes(sep_list **head_s, line_list **head_l, char *input)
 {
 	int i;
 	char *line;
 
-	input_str = swap_char(input_str, 0);
+	input = swap_char(input, 0);
 
-	for (i = 0; input_str[i]; i++)
+	for (i = 0; input[i]; i++)
 	{
-		if (input_str[i] == ';')
-			add_sep_node_end(head_s, input_str[i]);
+		if (input[i] == ';')
+			add_sep_node_end(head_s, input[i]);
 
-		if (input_str[i] == '|' || input_str[i] == '&')
+		if (input[i] == '|' || input[i] == '&')
 		{
-			add_sep_node_end(head_s, input_str[i]);
+			add_sep_node_end(head_s, input[i]);
 			i++;
 		}
 	}
 
-	line = _strtok(input_str, ";|&");
+	line = _strtok(input, ";|&");
 	do {
 		line = swap_char(line, 1);
 		add_line_node_end(head_l, line);
@@ -126,10 +126,10 @@ void go_next(sep_list **list_s, line_list **list_l, data_shell *datash)
  * the separators ;, | and &, and executes them
  *
  * @datash: data structure
- * @input_str: input_str string
+ * @input: input string
  * Return: 0 to exit, 1 to continue
  */
-int split_commands(data_shell *datash, char *input_str)
+int split_commands(data_shell *datash, char *input)
 {
 
 	sep_list *head_s, *list_s;
@@ -139,15 +139,15 @@ int split_commands(data_shell *datash, char *input_str)
 	head_s = NULL;
 	head_l = NULL;
 
-	add_nodes(&head_s, &head_l, input_str);
+	add_nodes(&head_s, &head_l, input);
 
 	list_s = head_s;
 	list_l = head_l;
 
 	while (list_l != NULL)
 	{
-		datash->input_str = list_l->line;
-		datash->args = split_line(datash->input_str);
+		datash->input = list_l->line;
+		datash->args = split_line(datash->input);
 		loop = exec_line(datash);
 		free(datash->args);
 
@@ -169,12 +169,12 @@ int split_commands(data_shell *datash, char *input_str)
 }
 
 /**
- * split_line - tokenizes the input_str string
+ * split_line - tokenizes the input string
  *
- * @input_str: input_str string.
+ * @input: input string.
  * Return: string splitted.
  */
-char **split_line(char *input_str)
+char **split_line(char *input)
 {
 	size_t bsize;
 	size_t i;
@@ -189,7 +189,7 @@ char **split_line(char *input_str)
 		exit(EXIT_FAILURE);
 	}
 
-	token = _strtok(input_str, TOK_DELIM);
+	token = _strtok(input, TOK_DELIM);
 	tokens[0] = token;
 
 	for (i = 1; token != NULL; i++)
