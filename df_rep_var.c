@@ -1,4 +1,4 @@
-#include "main.head"
+#include "main.h"
 
 /**
  * check_env - to check if the typed variable is an env variable
